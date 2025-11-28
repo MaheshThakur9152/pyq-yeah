@@ -1,0 +1,5 @@
+{
+  "name": "HSC Genius Quiz",
+  "description": "An intelligent quiz application for HSC students focusing on Physics, Chemistry, and Mathematics (PCM). Features AI-generated questions, user authentication, and performance history.",
+  "requestFramePermissions": []
+}
