@@ -185,7 +185,8 @@ const Dashboard: React.FC = () => {
                                 // Special handling for static question chapters to show filters
                                 const isStaticChapter = 
                                     (selectedSubjectForChapters === Subject.PHYSICS && chapter === "Mechanical Properties of Fluids") ||
-                                    (selectedSubjectForChapters === Subject.PHYSICS && chapter === "Kinetic Theory of Gases and Radiation");
+                                    (selectedSubjectForChapters === Subject.PHYSICS && chapter === "Kinetic Theory of Gases and Radiation") ||
+                                    (selectedSubjectForChapters === Subject.PHYSICS && chapter === "Superposition of Waves");
                                     
                                 if (isStaticChapter) {
                                     return (
