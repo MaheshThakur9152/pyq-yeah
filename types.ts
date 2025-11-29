@@ -72,6 +72,11 @@ export interface Question {
   category?: string;
 }
 
+export interface WrongAnswer {
+  question: Question;
+  selectedOptionIndex: number | null;
+}
+
 export interface QuizResult {
   id: string;
   subject: Subject;
@@ -80,6 +85,7 @@ export interface QuizResult {
   totalQuestions: number;
   date: string;
   userId: string;
+  wrongAnswers?: WrongAnswer[];
 }
 
 export interface User {

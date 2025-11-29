@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Subject, Question, QuizResult, User } from '../types';
+import { Subject, Question, QuizResult, User, WrongAnswer } from '../types';
 import { generateQuizQuestions } from '../services/geminiService';
 import Button from '../components/Button';
 
@@ -11,18 +11,20 @@ interface QuizPageProps {
 }
 
 const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const subjectParam = searchParams.get('subject') as Subject;
   const topicParam = searchParams.get('topic');
   const filterParam = searchParams.get('filter');
+  const qParam = searchParams.get('q');
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
-  const [showAnswer, setShowAnswer] = useState(false); // New state for non-MCQs
-  const [score, setScore] = useState(0);
+  // Store user answers: index -> { optionIndex, isCorrect }
+  const [userAnswers, setUserAnswers] = useState<Record<number, { optionIndex: number | null, isCorrect: boolean }>>({});
+  const [showAnswer, setShowAnswer] = useState(false); // Only for current non-MCQ interaction
   const [isFinished, setIsFinished] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -44,16 +46,22 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
       setQuestions(generatedQuestions);
       
       // Reset game state
-      setScore(0);
+      setUserAnswers({});
       setCurrentQuestionIndex(0);
-      setSelectedOptionIndex(null);
       setShowAnswer(false);
+      
+      // Ensure URL starts at q=1
+      setSearchParams(prev => {
+        prev.set('q', '1');
+        return prev;
+      }, { replace: true });
+
     } catch (err) {
       setError('Failed to load quiz. Please try again.');
     } finally {
       setLoading(false);
     }
-  }, [subjectParam, topicParam, filterParam]);
+  }, [subjectParam, topicParam, filterParam, setSearchParams]);
 
   useEffect(() => {
     if (!subjectParam || !Object.values(Subject).includes(subjectParam)) {
@@ -61,54 +69,74 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
       return;
     }
     
-    // Initial fetch
-    fetchQuiz();
-  }, [subjectParam, navigate, fetchQuiz]);
+    // Only fetch if questions are empty (initial load)
+    if (questions.length === 0) {
+        fetchQuiz();
+    }
+  }, [subjectParam, navigate, fetchQuiz, questions.length]);
+
+  // Handle URL navigation (Back/Forward buttons)
+  useEffect(() => {
+      const qIndex = qParam ? parseInt(qParam) - 1 : 0;
+      if (questions.length > 0 && qIndex >= 0 && qIndex < questions.length) {
+          setCurrentQuestionIndex(qIndex);
+          // Reset local showAnswer state when navigating
+          setShowAnswer(false);
+      }
+  }, [qParam, questions.length]);
 
   const handleOptionSelect = (index: number) => {
-    if (selectedOptionIndex !== null) return;
-    setSelectedOptionIndex(index);
+    if (userAnswers[currentQuestionIndex]) return; // Already answered
+    
+    const isCorrect = index === questions[currentQuestionIndex].correctAnswerIndex;
+    setUserAnswers(prev => ({
+        ...prev,
+        [currentQuestionIndex]: { optionIndex: index, isCorrect }
+    }));
   };
 
   const handleNext = (selfGradeCorrect?: boolean) => {
-    // If it's an MCQ
-    if (questions[currentQuestionIndex].options.length > 0) {
-      if (selectedOptionIndex === questions[currentQuestionIndex].correctAnswerIndex) {
-        setScore(prev => prev + 1);
-      }
-    } else {
-        // If it's a self-graded question
-        if (selfGradeCorrect) {
-            setScore(prev => prev + 1);
-        }
+    let currentAnswers = { ...userAnswers };
+
+    // If it's a non-MCQ, we record the answer now based on the button clicked
+    if (questions[currentQuestionIndex].options.length === 0) {
+        currentAnswers[currentQuestionIndex] = { 
+            optionIndex: null, 
+            isCorrect: !!selfGradeCorrect 
+        };
+        setUserAnswers(currentAnswers);
     }
 
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-      setSelectedOptionIndex(null);
-      setShowAnswer(false);
+      // Navigate to next question
+      setSearchParams(prev => {
+          prev.set('q', (currentQuestionIndex + 2).toString());
+          return prev;
+      });
     } else {
-      finishQuiz(selfGradeCorrect);
+      finishQuiz(currentAnswers);
     }
   };
 
-  const finishQuiz = useCallback((lastQuestionSelfCorrect?: boolean) => {
-    let finalScore = score;
-    const currentQ = questions[currentQuestionIndex];
-    
-    // Check MCQ logic
-    if (currentQ.options.length > 0) {
-        if (selectedOptionIndex === currentQ.correctAnswerIndex) {
-            finalScore += 1;
+  const finishQuiz = useCallback((finalAnswers: Record<number, { optionIndex: number | null, isCorrect: boolean }>) => {
+    let finalScore = 0;
+    const wrongAnswersList: WrongAnswer[] = [];
+
+    questions.forEach((q, idx) => {
+        const ans = finalAnswers[idx];
+        if (ans) {
+            if (ans.isCorrect) {
+                finalScore++;
+            } else {
+                wrongAnswersList.push({
+                    question: q,
+                    selectedOptionIndex: ans.optionIndex
+                });
+            }
         }
-    } else {
-        // Check Self-grade logic for last question
-        if (lastQuestionSelfCorrect) {
-            finalScore += 1;
-        }
-    }
+    });
     
-    setScore(finalScore);
+    setFinalScore(finalScore);
     setIsFinished(true);
 
     const result: QuizResult = {
@@ -118,10 +146,12 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
       score: finalScore,
       totalQuestions: questions.length,
       date: new Date().toISOString(),
-      userId: user.id
+      userId: user.id,
+      wrongAnswers: wrongAnswersList
     };
     saveResult(result);
-  }, [score, selectedOptionIndex, currentQuestionIndex, questions, subjectParam, topicParam, user.id, saveResult]);
+  }, [questions, subjectParam, topicParam, user.id, saveResult]);
+
 
 
   if (loading) {
@@ -153,7 +183,7 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
   }
 
   if (isFinished) {
-    const percentage = Math.round((score / questions.length) * 100);
+    const percentage = Math.round((finalScore / questions.length) * 100);
     let message = '';
     let emoji = '';
     let colorClass = '';
@@ -183,7 +213,7 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
         
         <div className="px-6 py-10 text-center">
           <div className="flex justify-center items-end mb-8">
-             <span className={`text-6xl font-extrabold ${colorClass}`}>{score}</span>
+             <span className={`text-6xl font-extrabold ${colorClass}`}>{finalScore}</span>
              <span className="text-2xl text-gray-400 font-medium mb-2">/{questions.length}</span>
           </div>
           
@@ -200,6 +230,10 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
 
   const currentQuestion = questions[currentQuestionIndex];
   const isMCQ = currentQuestion.options && currentQuestion.options.length > 0;
+  const currentAnswer = userAnswers[currentQuestionIndex];
+  const selectedOptionIndex = currentAnswer?.optionIndex ?? null;
+  const isAnswered = !!currentAnswer;
+  const shouldShowAnswer = showAnswer || isAnswered;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -297,7 +331,7 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
         ) : (
             // NON-MCQ RENDERING (Flashcard Style)
             <div className="mt-8">
-                {!showAnswer ? (
+                {!shouldShowAnswer ? (
                     <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-300">
                         <p className="text-gray-500 mb-4">Think about the answer, then click to reveal.</p>
                         <Button onClick={() => setShowAnswer(true)} variant="secondary">Reveal Answer</Button>
@@ -315,6 +349,11 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
                                 <div className="text-blue-800 leading-relaxed whitespace-pre-wrap text-sm font-medium">
                                     {currentQuestion.explanation}
                                 </div>
+                                {isAnswered && (
+                                    <div className={`mt-4 p-3 rounded-lg border ${currentAnswer.isCorrect ? 'bg-green-100 border-green-200 text-green-800' : 'bg-red-100 border-red-200 text-red-800'}`}>
+                                        <strong>Your Result:</strong> {currentAnswer.isCorrect ? 'Correct' : 'Incorrect'}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -339,10 +378,10 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
         )}
 
         <div className="mt-10 flex justify-end">
-            {isMCQ ? (
+            {isMCQ || isAnswered ? (
                 <Button 
                     onClick={() => handleNext()} 
-                    disabled={selectedOptionIndex === null}
+                    disabled={!isAnswered}
                     className="w-full sm:w-auto text-lg px-8 py-3"
                 >
                     {currentQuestionIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
@@ -352,7 +391,7 @@ const Quiz: React.FC<QuizPageProps> = ({ user, saveResult }) => {
                 </Button>
             ) : (
                 // Logic for non-MCQ next buttons
-                showAnswer ? (
+                shouldShowAnswer ? (
                     <div className="w-full flex flex-col sm:flex-row gap-3 justify-end">
                         <Button variant="danger" onClick={() => handleNext(false)} className="w-full sm:w-auto">
                             I missed it

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { QuizResult, User } from '../types';
 
 interface HistoryProps {
@@ -7,9 +7,19 @@ interface HistoryProps {
 }
 
 const History: React.FC<HistoryProps> = ({ user, history }) => {
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+
   const userHistory = history
     .filter(h => h.userId === user.id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const toggleRow = (id: string) => {
+    if (expandedRowId === id) {
+      setExpandedRowId(null);
+    } else {
+      setExpandedRowId(id);
+    }
+  };
 
   if (userHistory.length === 0) {
     return (
@@ -57,8 +67,14 @@ const History: React.FC<HistoryProps> = ({ user, history }) => {
             <tbody className="bg-white divide-y divide-gray-100">
               {userHistory.map((record) => {
                 const percentage = (record.score / record.totalQuestions) * 100;
+                const isExpanded = expandedRowId === record.id;
+                
                 return (
-                  <tr key={record.id} className="hover:bg-gray-50 transition-colors">
+                  <React.Fragment key={record.id}>
+                  <tr 
+                    onClick={() => toggleRow(record.id)} 
+                    className={`cursor-pointer transition-colors ${isExpanded ? 'bg-indigo-50/50' : 'hover:bg-gray-50'}`}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-bold text-gray-900">{record.subject}</div>
                       {record.topic && <div className="text-xs text-gray-500 mt-1 flex items-center"><span className="w-1.5 h-1.5 bg-gray-300 rounded-full mr-2"></span>{record.topic}</div>}
@@ -74,7 +90,7 @@ const History: React.FC<HistoryProps> = ({ user, history }) => {
                       <span className="text-gray-400 mx-1">•</span>
                       {new Date(record.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap flex items-center justify-between">
                       <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border ${
                         percentage >= 80 ? 'bg-green-50 text-green-700 border-green-200' : 
                         percentage >= 50 ? 'bg-amber-50 text-amber-700 border-amber-200' : 
@@ -82,8 +98,66 @@ const History: React.FC<HistoryProps> = ({ user, history }) => {
                       }`}>
                         {percentage >= 80 ? 'Excellent' : percentage >= 50 ? 'Good' : 'Review Needed'}
                       </span>
+                      <svg className={`w-5 h-5 text-gray-400 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
                     </td>
                   </tr>
+                  {isExpanded && (
+                    <tr>
+                        <td colSpan={4} className="px-6 py-6 bg-gray-50 border-t border-gray-100">
+                            {record.wrongAnswers && record.wrongAnswers.length > 0 ? (
+                                <div className="space-y-4">
+                                    <h4 className="font-bold text-red-800 text-sm flex items-center">
+                                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        Mistakes Review ({record.wrongAnswers.length})
+                                    </h4>
+                                    <div className="grid gap-4">
+                                    {record.wrongAnswers.map((wa, idx) => (
+                                        <div key={idx} className="bg-white p-4 rounded-xl border border-red-100 shadow-sm">
+                                            <p className="font-bold text-gray-900 mb-3 text-sm">{idx + 1}. {wa.question.text}</p>
+                                            <div className="text-sm space-y-2">
+                                                {wa.question.options && wa.question.options.length > 0 ? (
+                                                    <>
+                                                        <div className="flex items-start">
+                                                            <span className="text-red-500 font-semibold w-24 flex-shrink-0">Your Answer:</span>
+                                                            <span className="text-red-700">{wa.selectedOptionIndex !== null ? wa.question.options[wa.selectedOptionIndex] : 'Skipped'}</span>
+                                                        </div>
+                                                        <div className="flex items-start">
+                                                            <span className="text-green-600 font-semibold w-24 flex-shrink-0">Correct:</span>
+                                                            <span className="text-green-800">{wa.question.options[wa.question.correctAnswerIndex]}</span>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="flex items-start">
+                                                        <span className="text-red-500 font-semibold w-24 flex-shrink-0">Result:</span>
+                                                        <span className="text-red-700">Incorrect (Self-graded)</span>
+                                                    </div>
+                                                )}
+                                                
+                                                <div className="mt-3 pt-3 border-t border-gray-100">
+                                                    <span className="text-gray-500 font-semibold text-xs uppercase tracking-wide block mb-1">Explanation</span>
+                                                    <p className="text-gray-600 leading-relaxed">{wa.question.explanation}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-center py-4 text-green-600 font-medium text-sm">
+                                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Perfect score! No mistakes to review.
+                                </div>
+                            )}
+                        </td>
+                    </tr>
+                  )}
+                  </React.Fragment>
                 );
               })}
             </tbody>
