@@ -620,3 +620,347 @@ export const KINETIC_THEORY_GASES_QUESTIONS: Question[] = [
     category: "3 Marks"
   }
 ];
+
+export const SUPERPOSITION_OF_WAVES_QUESTIONS: Question[] = [
+  // --- 1 Mark MCQs ---
+  {
+    id: 1201,
+    text: "Doppler effect is not applicable when",
+    options: ["the source and observer are moving towards each other", "there is relative motion between source and observer", "the source is at rest and observer is moving", "source and observer are moving in the same direction with the same speed"],
+    correctAnswerIndex: 3,
+    explanation: "Doppler effect depends on relative motion. If both move in same direction with same speed, relative velocity is zero.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1202,
+    text: "When a transverse wave on a string is reflected from the free end, the phase change produced is",
+    options: ["0 rad", "π/2 rad", "π rad", "2π rad"],
+    correctAnswerIndex: 0,
+    explanation: "Reflection from a free end (rarer medium) involves no phase change.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1203,
+    text: "Let n₁ and n₂ be the two slightly different frequencies of two sound waves. The time interval between waxing and immediate next waning is",
+    options: ["1/(n₁ - n₂)", "1/[2(n₁ - n₂)]", "2/(n₁ - n₂)", "1/[2(n₁ + n₂)]"],
+    correctAnswerIndex: 1,
+    explanation: "Beat period T = 1/(n₁ - n₂). Time between waxing (max) and waning (min) is T/2 = 1/[2(n₁ - n₂)].",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1204,
+    text: "A pipe open at both ends resonates to a frequency n. A pipe closed at one end resonates to a frequency n/2. If they are joined to form a pipe closed at one end, then the fundamental frequency will be",
+    options: ["2n/3", "n/3", "3n/4", "n/2"],
+    correctAnswerIndex: 1,
+    explanation: "Open pipe L1: n = v/2L1. Closed pipe L2: n/2 = v/4L2 => L1=L2. Joined L = 2L1. New closed pipe freq n' = v/4(2L1) = n/4. (Note: User answer key says n/3, keeping as requested)",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1205,
+    text: "The fundamental frequency of transverse vibration of a stretched string of radius r is proportional to",
+    options: ["r⁻¹", "r⁻²", "r", "r²"],
+    correctAnswerIndex: 0,
+    explanation: "n ∝ 1/r.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1206,
+    text: "A sonometer wire vibrates with frequency n₁ in air under suitable load. When the load is immersed in water, the frequency becomes n₂. If the specific gravity of the load is σ, then",
+    options: ["n₁/n₂ = √[σ/(σ - 1)]", "n₂/n₁ = √[σ/(σ - 1)]", "n₁/n₂ = √σ", "n₂/n₁ = √(σ - 1)"],
+    correctAnswerIndex: 0,
+    explanation: "n ∝ √T. Ratio n1/n2 = √[σ/(σ-1)].",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1207,
+    text: "Velocity of transverse wave along a stretched string is proportional to",
+    options: ["√T", "T", "1/√T", "T²"],
+    correctAnswerIndex: 0,
+    explanation: "v ∝ √T.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1208,
+    text: "Doppler effect is not applicable when",
+    options: ["source and observer are at rest", "there is relative motion between source and observer", "both are moving in opposite directions", "both are moving in same direction with different velocities"],
+    correctAnswerIndex: 0,
+    explanation: "No relative motion if both are at rest.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1209,
+    text: "In stationary wave, the distance between a node and its adjacent antinode is",
+    options: ["λ", "λ/4", "λ/2", "2λ"],
+    correctAnswerIndex: 1,
+    explanation: "Distance is λ/4.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1210,
+    text: "The working of RADAR is based on",
+    options: ["resonance", "speed of a star", "Doppler effect", "speed of rotation of sun"],
+    correctAnswerIndex: 2,
+    explanation: "RADAR uses Doppler effect.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1211,
+    text: "If sound waves are reflected from surface of denser medium, there is phase change of",
+    options: ["0 rad", "π/2 rad", "π rad", "2π rad"],
+    correctAnswerIndex: 2,
+    explanation: "Reflection from denser medium gives π phase change.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1212,
+    text: "A sonometer wire vibrates with three nodes and two antinodes. The corresponding mode of vibration is",
+    options: ["First overtone", "Second overtone", "Third overtone", "Fourth overtone"],
+    correctAnswerIndex: 0,
+    explanation: "2 loops = 1st overtone.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1213,
+    text: "A sine wave of wavelength λ is travelling in a medium. What is the minimum distance between two particles of the medium which are always in the same phase?",
+    options: ["λ/2", "λ", "2λ", "λ/4"],
+    correctAnswerIndex: 1,
+    explanation: "Minimum distance for same phase is λ.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1214,
+    text: "A wave is travelling in the negative direction of X-axis, then its equation is",
+    options: ["y = a sin(2π(t/T + x/λ))", "y = a sin(2π(t/T - x/λ))", "y = a cos(2π(t/T + x/λ))", "y = a cos(2π(t/T - x/λ))"],
+    correctAnswerIndex: 0,
+    explanation: "Negative x direction implies (t/T + x/λ).",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1215,
+    text: "If the longitudinal wave travelling in rarer medium is incident on the boundary of denser medium, then the phase of wave changes by",
+    options: ["2π rad", "π rad", "π/2 rad", "4π rad"],
+    correctAnswerIndex: 1,
+    explanation: "Phase change of π.",
+    category: "1 Mark MCQ"
+  },
+  {
+    id: 1216,
+    text: "A string fixed at one end and free at other. The length of string must be",
+    options: ["odd integral multiple of λ/4", "integral multiple of λ/4", "integral multiple of λ", "integral multiple of λ/2"],
+    correctAnswerIndex: 0,
+    explanation: "L = (2n-1)λ/4.",
+    category: "1 Mark MCQ"
+  },
+
+  // --- 1 Mark Very Short Answer Questions ---
+  {
+    id: 1301,
+    text: "Define beat frequency.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Beat frequency is the number of beats produced per second, equal to the absolute difference between the frequencies of two interfering sound waves.",
+    category: "1 Mark VSA"
+  },
+  {
+    id: 1302,
+    text: "What is end correction?",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "End correction is the additional length (≈ 0.3 × radius of pipe) added to the actual length of an air column in an organ pipe to account for antinode formation slightly outside the open end.",
+    category: "1 Mark VSA"
+  },
+  {
+    id: 1303,
+    text: "What is a node in a stationary wave?",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "A node is a point in a stationary wave where the amplitude of vibration is minimum (zero).",
+    category: "1 Mark VSA"
+  },
+
+  // --- 2 Marks Theory Questions ---
+  {
+    id: 1401,
+    text: "Differentiate between free and forced vibrations.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Free vibrations: Body vibrates at natural frequency without external force; amplitude decays. Forced vibrations: Body vibrates at frequency of external periodic force; amplitude depends on driving frequency.",
+    category: "2 Marks"
+  },
+  {
+    id: 1402,
+    text: "Explain analytically how the stationary waves are formed. Hence show that the distance between node and adjacent antinode is λ/4.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Superposition of y1 = a sin(ωt - kx) and y2 = a sin(ωt + kx) gives y = 2a cos(kx) sin(ωt). Nodes at cos(kx)=0 (x = (2n-1)λ/4), Antinodes at cos(kx)=±1 (x = nλ/2). Distance = λ/4.",
+    category: "2 Marks"
+  },
+  {
+    id: 1403,
+    text: "State any two characteristics of progressive waves.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "1. Energy is transmitted in direction of propagation. 2. All particles vibrate with same amplitude but different phases.",
+    category: "2 Marks"
+  },
+  {
+    id: 1404,
+    text: "What are harmonics and overtones?",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Harmonics: Frequencies that are integral multiples of fundamental (n, 2n, 3n...). Overtones: Frequencies higher than fundamental actually produced by instrument.",
+    category: "2 Marks"
+  },
+  {
+    id: 1405,
+    text: "State the principle of superposition of waves. Distinguish between forced vibrations and resonance.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Principle: Resultant displacement is vector sum of individual displacements. Distinction: Resonance is a special case of forced vibration where driving frequency equals natural frequency, causing max amplitude.",
+    category: "2 Marks"
+  },
+
+  // --- 2 Marks Numericals ---
+  {
+    id: 1501,
+    text: "A pipe open at both ends is 47 cm long. Speed of sound = 348 m/s. Find fundamental frequency.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "n = v/2L = 348 / (2 * 0.47) = 348 / 0.94 = 370.2 Hz.",
+    category: "2 Marks"
+  },
+  {
+    id: 1502,
+    text: "Sonometer wire: L = 36 cm, n = 280 Hz, T = 24.5 N. Find linear density (m).",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "n = (1/2L)√(T/m) => m = T / (4L²n²) = 24.5 / (4 * 0.36² * 280²) = 6.03 × 10⁻⁴ kg/m.",
+    category: "2 Marks"
+  },
+  {
+    id: 1503,
+    text: "Fundamental of closed pipe = third overtone of open pipe. Find L_closed / L_open.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Closed fund: v/4Lc. Open 3rd overtone (4th harmonic): 4v/2Lo = 2v/Lo. Equating: v/4Lc = 2v/Lo => Lc/Lo = 1/8.",
+    category: "2 Marks"
+  },
+  {
+    id: 1504,
+    text: "Open pipe, L = 47 cm, v = 330 m/s. Fundamental frequency?",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "n = v/2L = 330 / (2 * 0.47) = 330 / 0.94 = 351.1 Hz.",
+    category: "2 Marks"
+  },
+  {
+    id: 1505,
+    text: "Resonance tube: L₁ = 16 cm (1st resonance), L₂ = 50.25 cm (2nd resonance). Find end correction (e).",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "e = (L2 - 3L1) / 2 = (50.25 - 48) / 2 = 1.125 cm.",
+    category: "2 Marks"
+  },
+  {
+    id: 1506,
+    text: "Sonometer wire in unison with tuning fork. Length increased by 5% → 10 beats/sec. Find tuning fork frequency.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "n ∝ 1/L. n1 = n. n2 = n/1.05. Beats = n - n/1.05 = 10. n(0.05/1.05) = 10 => n = 210 Hz.",
+    category: "2 Marks"
+  },
+
+  // --- 3 Marks Theory Questions ---
+  {
+    id: 1601,
+    text: "Derive expression for 1D SH progressive wave in +X direction. Give two forms.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "y = a sin(ωt - kx). Forms: 1) y = a sin(2π(t/T - x/λ)), 2) y = a sin(ωt - kx).",
+    category: "3 Marks"
+  },
+  {
+    id: 1602,
+    text: "Show that all harmonics are present on a stretched string between two rigid supports.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "L = nλ/2 => λ = 2L/n. f = nv/2L = n * f1. Since n = 1, 2, 3..., all harmonics are present.",
+    category: "3 Marks"
+  },
+  {
+    id: 1603,
+    text: "Show that beat frequency = |n₁ - n₂|.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Superposition of sin(2πn1t) and sin(2πn2t) gives amplitude term 2a cos(π(n1-n2)t). Maxima occur when cos term is ±1, frequency of maxima is |n1 - n2|.",
+    category: "3 Marks"
+  },
+  {
+    id: 1604,
+    text: "Explain reflection of transverse and longitudinal waves from denser and rarer media.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Transverse: Denser -> π shift, Rarer -> 0 shift. Longitudinal: Denser -> Displacement π shift (Pressure 0 shift), Rarer -> Displacement 0 shift.",
+    category: "3 Marks"
+  },
+
+  // --- 3 Marks Numericals ---
+  {
+    id: 1701,
+    text: "Wave: y = 0.05 sin(20πt - πx/6). Find y at x=5 m, t=0.1 s.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "y = 0.05 sin(2π - 5π/6) = 0.05 sin(7π/6) = -0.025 m.",
+    category: "3 Marks"
+  },
+  {
+    id: 1702,
+    text: "Wavelengths: λ₁ = 70/153 m, λ₂ = 70/157 m. Each gives 8 beats with tuning fork. Find v and n.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "n1 - n = 8, n - n2 = 8 => n1 - n2 = 16. v(1/λ1 - 1/λ2) = 16. v = 280 m/s. n = 604 Hz.",
+    category: "3 Marks"
+  },
+  {
+    id: 1703,
+    text: "Wire: n₁ = 256 Hz, n₂ = 320 Hz when length reduced by 10 cm. Find original length.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "n1L1 = n2L2. 256L = 320(L - 0.1). L = 0.5 m = 50 cm.",
+    category: "3 Marks"
+  },
+  {
+    id: 1704,
+    text: "Train whistle: n = 640 Hz, vₜ = 72 km/h = 20 m/s, v = 340 m/s. Find |n_app1 – n_app2|.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Appr: 680 Hz. Reced: 604.44 Hz. Diff = 75.56 Hz.",
+    category: "3 Marks"
+  },
+  {
+    id: 1705,
+    text: "Sonometer: n = 125 Hz in air. 8 beats/sec when load immersed in water. Find σ.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "n_water = 117 Hz. n_air/n_water = √[σ/(σ-1)]. (125/117)² = σ/(σ-1). σ ≈ 8.07.",
+    category: "3 Marks"
+  },
+
+  // --- 4 Marks Theory Questions ---
+  {
+    id: 1801,
+    text: "Show all harmonics are present in open pipe. Define end correction.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Open pipe L = nλ/2. f = nv/2L. All integer multiples n=1,2,3... present. End correction e = 0.3d added to L.",
+    category: "4 Marks"
+  },
+  {
+    id: 1802,
+    text: "Draw modes for (a) open pipe, (b) closed pipe. Derive fundamental frequency.",
+    options: [],
+    correctAnswerIndex: -1,
+    explanation: "Open: Antinode-Node-Antinode, f=v/2L. Closed: Node-Antinode, f=v/4L.",
+    category: "4 Marks"
+  }
+];

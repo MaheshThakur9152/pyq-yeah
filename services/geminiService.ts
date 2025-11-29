@@ -1,6 +1,6 @@
 
 import { Subject, Question } from '../types';
-import { MECHANICAL_PROPERTIES_FLUIDS_QUESTIONS, KINETIC_THEORY_GASES_QUESTIONS } from '../data/staticQuestions';
+import { MECHANICAL_PROPERTIES_FLUIDS_QUESTIONS, KINETIC_THEORY_GASES_QUESTIONS, SUPERPOSITION_OF_WAVES_QUESTIONS } from '../data/staticQuestions';
 
 // Helper to shuffle array
 const shuffleArray = <T>(array: T[]): T[] => {
@@ -21,6 +21,8 @@ export const generateQuizQuestions = async (subject: Subject, topic?: string, co
         staticQuestions = MECHANICAL_PROPERTIES_FLUIDS_QUESTIONS;
     } else if (topic === "Kinetic Theory of Gases and Radiation") {
         staticQuestions = KINETIC_THEORY_GASES_QUESTIONS;
+    } else if (topic === "Superposition of Waves") {
+        staticQuestions = SUPERPOSITION_OF_WAVES_QUESTIONS;
     }
   }
 
